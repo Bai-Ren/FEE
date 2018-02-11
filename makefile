@@ -1,43 +1,44 @@
 SRCS = test.cpp
 OBJS = test.o
+WIN_OBJS = test.win.o
 
-CC = 
-LINKER = 
-EXE = 
-
-LINUX_CC = g++
-LINUX_LINKER = g++
-LINUX_EXE = fee
+CC = g++
+LINKER = g++
+EXE = fee
+COMPILER_FLAGS = -Wall -c
+LINKER_FLAGS = -Wall -lSDL2
 
 WIN_CC = x86_64-w64-mingw32-g++
 WIN_LINKER = x86_64-w64-mingw32-g++
 WIN_EXE = fee.exe
+WIN_COMPILER_FLAGS = -Wall -c -I /usr/local/cross-tools/x86_64-w64-mingw32/include/ 
+WIN_LINKER_FLAGS = -Wall -L /usr/local/cross-tools/x86_64-w64-mingw32/lib/ -lmingw32 -lSDL2main -lSDL2
 
-COMPILER_FLAGS = -Wall -c
-LINKER_FLAGS = -lSDL2 -Wall
+
 
 .PHONY : all linux windows clean
 
-linux: CC=$(LINUX_CC)
-linux: LINKER=$(LINUX_LINKER)
-linux: EXE=$(LINUX_EX)
-linux: $(LINUX_EXE)
+all: linux windows
 
-windows: CC=$(WIN_CC)
-windows: LINKER=$(WIN_LINKER)
-windows: EXE=$(WIN_EXE)
+linux: $(EXE)
+
 windows: $(WIN_EXE)
 
-all: linux
-
 clean: 
-	rm -f $(LINUX_EXE) $(WIN_EXE) $(OBJS)
+	rm -f $(EXE) $(WIN_EXE) $(OBJS) $(WIN_OBJS)
 
-$(LINUX_EXE): $(OBJS)
+$(EXE): $(OBJS)
 	$(LINKER) $^ $(LINKER_FLAGS) -o $@
 
-$(WIN_EXE): $(OBJS)
-	$(LINKER) $^ $(LINKER_FLAGS) -o $@
+$(WIN_EXE): temp.exe
+	osslsigncode sign -certs ~/.signing/jd.crt -key ~/.signing/jd.key -n "Fire Emblem Custom Engine" -i https://github.com/Bai-Ren -in $^ -out $@
+	rm temp.exe
+
+temp.exe: $(WIN_OBJS)
+	$(WIN_LINKER) $^ $(WIN_LINKER_FLAGS) -o $@
 
 test.o: test.cpp
 	$(CC) $^ $(COMPILER_FLAGS) -o $@
+
+test.win.o: test.cpp
+	$(WIN_CC) $^ $(WIN_COMPILER_FLAGS) -o $@
