@@ -16,7 +16,7 @@ WIN_EXE = fee.exe
 COMPILER_FLAGS = -Wall -c
 LINKER_FLAGS = -lSDL2 -Wall
 
-.PHONY : all linux windows
+.PHONY : all linux windows clean
 
 linux: CC=$(LINUX_CC)
 linux: LINKER=$(LINUX_LINKER)
@@ -29,6 +29,9 @@ windows: EXE=$(WIN_EXE)
 windows: $(WIN_EXE)
 
 all: linux
+
+clean: 
+	rm -f $(LINUX_EXE) $(WIN_EXE) $(OBJS)
 
 $(LINUX_EXE): $(OBJS)
 	$(LINKER) $^ $(LINKER_FLAGS) -o $@
