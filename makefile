@@ -12,7 +12,7 @@ WIN_CC = x86_64-w64-mingw32-g++
 WIN_LINKER = x86_64-w64-mingw32-g++
 WIN_EXE = fee.exe
 WIN_COMPILER_FLAGS = -Wall -c -I /usr/local/cross-tools/x86_64-w64-mingw32/include/ 
-WIN_LINKER_FLAGS = -Wall -L /usr/local/cross-tools/x86_64-w64-mingw32/lib/ -lmingw32 -lSDL2main -lSDL2
+WIN_LINKER_FLAGS = -Wall -L /usr/local/cross-tools/x86_64-w64-mingw32/lib/ -lmingw32 -lSDL2main -lSDL2 -static-libstdc++
 
 
 
