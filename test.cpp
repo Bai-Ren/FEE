@@ -3,28 +3,37 @@
 
 using namespace std;
 
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+SDL_Window *window = NULL;
+SDL_Surface *screenSurface = NULL;
 
-int main (int argc, char *argv[]) {
-
-
-	SDL_Window *window = NULL;
-	SDL_Surface *screenSurface = NULL;
-
+int init (int width, int height) {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		cout << "SDL could not initialize! SDL_ERROR: " << SDL_GetERROR() << endl;
+		cout << "SDL could not initialize! SDL_ERROR: " << SDL_GetError() << endl;
 		return 1;
 	}
 
-	window = SDL_CreateWindow( "SDL Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+	window = SDL_CreateWindow( "SDL Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN );
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		cout << "SDL window could not be created! SDL_ERROR: " << SDL_GetERROR() << endl;
+		cout << "SDL window could not be created! SDL_ERROR: " << SDL_GetError() << endl;
 		return 1;
 	}
 
 	screenSurface = SDL_GetWindowSurface (window);
+
+	return 0;
+}
+
+int cleanup () {
+	SDL_DestroyWindow (window);
+	SDL_Quit();
+	return 0;
+}
+
+int main (int argc, char *argv[]) {
+
+	if (init(640, 480))
+		return 1;
 
 	SDL_FillRect( screenSurface, NULL, SDL_MapRGB (screenSurface->format, 0xFF, 0xFF, 0xFF) );
 
@@ -32,8 +41,7 @@ int main (int argc, char *argv[]) {
 
 	SDL_Delay (2000);
 
-	SDL_DestoryWindow (window);
-	SDL_Quit();
+	cleanup();
 
 	return 0;
 }
