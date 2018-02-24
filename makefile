@@ -12,7 +12,7 @@ WIN_CC = x86_64-w64-mingw32-g++
 WIN_LINKER = x86_64-w64-mingw32-g++
 WIN_EXE = fee.exe
 WIN_COMPILER_FLAGS = -Wall -c -I /usr/local/cross-tools/x86_64-w64-mingw32/include/ 
-WIN_LINKER_FLAGS = -Wall -L /usr/local/cross-tools/x86_64-w64-mingw32/lib/ -lmingw32 -lSDL2main -lSDL2 -static-libstdc++
+WIN_LINKER_FLAGS = -Wall -L /usr/local/cross-tools/x86_64-w64-mingw32/lib/ -lmingw32 -lSDL2main -lSDL2 -static-libstdc++ -static-libgcc
 
 
 
@@ -25,14 +25,13 @@ linux: $(EXE)
 windows: $(WIN_EXE)
 
 clean: 
-	rm -f $(EXE) $(WIN_EXE) $(OBJS) $(WIN_OBJS)
+	rm -f $(EXE) $(WIN_EXE) $(OBJS) $(WIN_OBJS) temp.exe
 
 $(EXE): $(OBJS)
 	$(LINKER) $^ $(LINKER_FLAGS) -o $@
 
 $(WIN_EXE): temp.exe
 	osslsigncode sign -certs ~/.signing/jd.crt -key ~/.signing/jd.key -n "Fire Emblem Custom Engine" -i https://github.com/Bai-Ren -in $^ -out $@
-	rm temp.exe
 
 temp.exe: $(WIN_OBJS)
 	$(WIN_LINKER) $^ $(WIN_LINKER_FLAGS) -o $@
@@ -41,4 +40,4 @@ test.o: test.cpp
 	$(CC) $^ $(COMPILER_FLAGS) -o $@
 
 test.win.o: test.cpp
-	$(WIN_CC) $^ $(WIN_COMPILER_FLAGS) -o $@
+	$(WIN_CC) $^ $(WIN_COMPILER_FLAGS) -o $@ 
